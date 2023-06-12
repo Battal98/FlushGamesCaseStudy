@@ -1,3 +1,4 @@
+using Enums;
 using Extentions;
 using UnityEngine;
 using UnityEngine.Events;
@@ -15,6 +16,8 @@ namespace Signals
 
         public UnityAction onStartMoneyPayment = delegate { };
         public UnityAction onStopMoneyPayment = delegate { };
+
+        //public UnityAction<PlayerAnimationStates> onChangePlayerAnimationState = delegate { };
 
     }
 }

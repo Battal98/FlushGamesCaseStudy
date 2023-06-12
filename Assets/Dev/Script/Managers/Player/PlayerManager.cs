@@ -1,6 +1,7 @@
 using Controllers;
 using Controllers.Scriptables;
 using Datas;
+using Enums;
 using Keys;
 using Signals;
 using Sirenix.OdinInspector;
@@ -74,7 +75,9 @@ namespace Managers
         private void OnGetInputValues(HorizontalInputParams inputParams)
         {
             movementController.UpdateInputValues(inputParams);
-            //animationController.PlayAnimation(inputParams);
+            PlayerAnimationStates playerAnimationStates;
+            playerAnimationStates = inputParams.MovementVector.sqrMagnitude > 0 ? PlayerAnimationStates.Run : PlayerAnimationStates.Idle;
+            animationController.PlayAnimation(playerAnimationStates);
         }
     }
 }
