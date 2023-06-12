@@ -75,7 +75,6 @@ namespace Managers
         {
             _playerTarget = _target;
             stateDrivenCamera.Follow = _playerTarget;
-            stateDrivenCamera.LookAt = _playerTarget;
             SetCameraState(CameraStatesType.IdleCamera);
         }
 

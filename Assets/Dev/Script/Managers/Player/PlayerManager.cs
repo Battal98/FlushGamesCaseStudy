@@ -1,5 +1,5 @@
 using Controllers;
-using Controllers.Scriptables;
+using Datas.Scriptables;
 using Datas;
 using Enums;
 using Keys;

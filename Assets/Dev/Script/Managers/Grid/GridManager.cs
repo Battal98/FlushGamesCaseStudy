@@ -12,19 +12,19 @@ public enum GridSurface
 }
 public class GridManager : MonoBehaviour
 {
+
     [SerializeField] private Vector2 gridSize;
     [SerializeField] private Vector2 gridOffsets;
+    [SerializeField] private GridSurface gridSurface;
     [SerializeField] private GameObject gridObject;
     [SerializeField] private Transform gridPivotTarget;
-    [SerializeField]
-    private int direction;
+    [SerializeField] private int direction;
     private float gridPivotCalculate;
 
     private const int XYRot = 0;
     private const int XZRot = 90;
     private const int YZRot = 90;
 
-    private GridSurface gridSurface;
     private List<GameObject> gridList = new List<GameObject>();
 
     private void Awake()
@@ -73,7 +73,7 @@ public class GridManager : MonoBehaviour
                     break;
 
                 case GridSurface.XZ:
-                    position = CalculatePosition(gridPivotTarget.position, direction * modX, 0, modY);
+                    position = CalculatePosition(gridPivotTarget.position, direction * modX, 0+0.02f, modY);
                     rotation = Quaternion.Euler(XZRot, 0, 0);
                     break;
 

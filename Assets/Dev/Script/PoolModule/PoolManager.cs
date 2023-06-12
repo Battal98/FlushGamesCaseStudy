@@ -16,6 +16,8 @@ namespace PoolModule
         private SerializedDictionary<PoolType, PoolData> _data;
         private int _listCountCache;
         private ObjectPoolExtention _extention;
+
+        private const string DataPath = "Data/CD_Pool";
         #endregion
 
         #endregion
@@ -69,7 +71,7 @@ namespace PoolModule
             _extention.ReturnObject<GameObject>(obj, poolType);
         }
 
-        private SerializedDictionary<PoolType, PoolData> GetData() => Resources.Load<CD_Pool>("Datas/CD_Pool").PoolDataDic;
+        private SerializedDictionary<PoolType, PoolData> GetData() => Resources.Load<CD_Pool>(DataPath).PoolDataDic;
 
         private void InitializePools()
         {

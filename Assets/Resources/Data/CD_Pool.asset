@@ -15,15 +15,19 @@ MonoBehaviour:
   PoolDataDic:
     m_Keys: 00000000010000000200000003000000
     m_Values:
-    - ObjectType: {fileID: 0}
+    - ObjectType: {fileID: 3365348553639676248, guid: 07b0602dd8953874485d0cf499614ab5,
+        type: 3}
       initalAmount: 100
       isDynamic: 1
-    - ObjectType: {fileID: 0}
-      initalAmount: 100
-      isDynamic: 0
-    - ObjectType: {fileID: 0}
-      initalAmount: 100
-      isDynamic: 0
-    - ObjectType: {fileID: 0}
-      initalAmount: 100
-      isDynamic: 0
+    - ObjectType: {fileID: 1017217365010394074, guid: 10e5bb8c8d0c57743b4eb1253fa6fb81,
+        type: 3}
+      initalAmount: 50
+      isDynamic: 1
+    - ObjectType: {fileID: 836063161030360341, guid: e22d22b036904f84f85402d3d90ee33e,
+        type: 3}
+      initalAmount: 50
+      isDynamic: 1
+    - ObjectType: {fileID: 2280136767097987492, guid: 8e4a111f5a0a24b47ba29711357ed9f9,
+        type: 3}
+      initalAmount: 50
+      isDynamic: 1
