@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerData:
     PlayerMovementData:
-      PlayerSpeed: 2
+      PlayerSpeed: 5
