@@ -61,6 +61,7 @@ namespace Controllers
             if (other.TryGetComponent<StoreManager>(out StoreManager storeController))
             {
                 storeController.ChangeColor(Color.black);
+                stackController.StopTween();
             }
         }
         private void CollectMoney(Stackable stackable)

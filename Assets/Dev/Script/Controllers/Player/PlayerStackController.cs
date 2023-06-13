@@ -90,16 +90,18 @@ namespace Controllers
 
         public void OnRemoveAllStack(Transform target)
         {
+            _isCanceledTween = false;
             RemoveAllStack(target);
         }
 
+        private Tween _currentTween;
+        private bool _isCanceledTween;// Eklediðimiz deðiþken, mevcut tween hareketini takip etmek için kullanýlacak
         private void RemoveAllStack(Transform target)
         {
             if (StackList.Count <= 0)
                 return;
 
-            RemoveStackAnimation(StackList[StackList.Count-1], target);
-
+            _currentTween = RemoveStackAnimationTween(StackList[StackList.Count - 1], target);
         }
 
         private void RemoveStackAnimation(Stackable removedStack, Transform targetTransform)
@@ -111,19 +113,47 @@ namespace Controllers
 
             removedStack.transform.DOLocalMove(targetTransform.localPosition, .1f).OnComplete(() =>
             {
-                ReleaseObject(removedStack.gameObject, PoolType.Money);
-                MoveNextObject(removedStack, targetTransform); 
                 StackList.Remove(removedStack);
                 StackList.TrimExcess();
+                ReleaseObject(removedStack.gameObject, PoolType.Money);
+                MoveNextObject(StackList[StackList.Count - 1], targetTransform); 
             });
 
-        } 
+        }
+        private Tween RemoveStackAnimationTween(Stackable removedStack, Transform targetTransform)
+        {
+            removedStack.transform.rotation = Quaternion.LookRotation(transform.forward);
+            removedStack.gameObject.transform.SetParent(null);
+            //CoreGameSignals.Instance.onUpdateMoneyScore.Invoke(+10);
+            CoreGameSignals.Instance.onCalculateGemStackType?.Invoke(removedStack.GemType);
+
+            Tween tween = removedStack.transform.DOLocalMove(targetTransform.localPosition, .1f).OnComplete(() =>
+            {
+                StackList.Remove(removedStack);
+                nextPositions.RemoveAt(nextPositions.Count-1);
+                StackList.TrimExcess();
+                nextPositions.TrimExcess();
+                ReleaseObject(removedStack.gameObject, PoolType.Money);
+                if (StackList.Count > 0 && !_isCanceledTween)
+                {
+                    MoveNextObject(StackList[StackList.Count - 1], targetTransform);
+                }
+            });
+
+            return tween;
+        }
 
         private void MoveNextObject(Stackable removedStack, Transform targetTransform)
         {
-            if (StackList.Count > 0)
+            _currentTween = RemoveStackAnimationTween(removedStack, targetTransform);
+        }
+
+        public void StopTween()
+        {
+            if (_currentTween != null)
             {
-                RemoveStackAnimation(removedStack, targetTransform);
+                _currentTween.Complete();
+                _isCanceledTween = true; // Önceki tween hareketini durdur
             }
         }
         #endregion
