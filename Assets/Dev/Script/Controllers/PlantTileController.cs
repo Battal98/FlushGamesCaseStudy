@@ -56,10 +56,12 @@ public class PlantTileController : MonoBehaviour, IGetPoolObject
         OnResetTile();
         var obj = GetObject(ConvertGemTypeToPoolType());
         var data = _plantedGemsData[(int)_gemType];
+        var objComponent = obj.GetComponent<Stackable>();
+        objComponent.SetType(_gemType);
         obj.transform.SetParent(targetTransform);
         obj.transform.localScale = Vector3.zero * 0.01f;
         obj.transform.localPosition = Vector3.zero;
-        obj.transform.DOScale(Vector3.one, data.GrownTime).OnUpdate(()=>
+        obj.transform.DOScale(Vector3.one/2, data.GrownTime).OnUpdate(()=>
         {
             if (!_isCollectable && obj.transform.localScale.z >= data.CollectibleGemScale)
             {
