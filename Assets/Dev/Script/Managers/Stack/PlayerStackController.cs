@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace Controllers
 {
-    public class StackManager : AStacker, IGetPoolObject, IReleasePoolObject
+    public class PlayerStackController : AStacker, IGetPoolObject, IReleasePoolObject
     {
         [SerializeField] private float radiusAround;
 

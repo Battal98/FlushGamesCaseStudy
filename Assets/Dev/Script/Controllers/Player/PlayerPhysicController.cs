@@ -1,6 +1,3 @@
-using Signals;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Controllers
@@ -16,7 +13,7 @@ namespace Controllers
         #region Serialized Variables
 
         [SerializeField]
-        private StackManager moneyStackerController;
+        private PlayerStackController stackController;
 
         #endregion
 
@@ -30,20 +27,25 @@ namespace Controllers
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.TryGetComponent<Stackable>(out Stackable stackable))
+            if (other.TryGetComponent<PlantTileController>(out PlantTileController plantTileController))
             {
-                Debug.Log("Trigger");
-                if (!stackable.isCollected)
+                var gemStackable = plantTileController.GetGemObject();
+                Debug.Log("Trigger: " + gemStackable);
+                if (gemStackable)
                 {
-                    CollectMoney(stackable);
+                    if (!gemStackable.IsCollected && gemStackable.IsCollectable)
+                    {
+                        CollectMoney(gemStackable);
+                        plantTileController.OnResetTile();
+                    }
                 }
             }
         }
         private void CollectMoney(Stackable stackable)
         {
-            moneyStackerController.SetStackHolder(stackable.transform);
-            moneyStackerController.GetStack(stackable.gameObject);
-            stackable.isCollected = true;
+            stackController.SetStackHolder(stackable.transform);
+            stackController.GetStack(stackable.gameObject);
+            stackable.SetIsCollected(true);
         }
 
         #region Paying Interaction

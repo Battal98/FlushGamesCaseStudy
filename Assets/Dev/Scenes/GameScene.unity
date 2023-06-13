@@ -1767,7 +1767,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f8ef7fa702784d4aa16f217aa18a65b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moneyStackerController: {fileID: 523351808}
+  stackController: {fileID: 523351808}
 --- !u!65 &1744952050
 BoxCollider:
   m_ObjectHideFlags: 0

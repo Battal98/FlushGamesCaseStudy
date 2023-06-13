@@ -110,7 +110,7 @@ Transform:
   m_GameObject: {fileID: 3990076707608810806}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3990076708102808136}
@@ -263,6 +263,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3990076709347476971}
   - component: {fileID: 2097571068007157749}
+  - component: {fileID: 5414724490188868461}
   m_Layer: 0
   m_Name: PlantTile
   m_TagString: Untagged
@@ -302,6 +303,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetTransform: {fileID: 1096448345171501121}
   spriteRendererFill: {fileID: 3990076707608810824}
+--- !u!65 &5414724490188868461
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3990076709347476969}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: -0.47}
 --- !u!1 &5033331060102461506
 GameObject:
   m_ObjectHideFlags: 0

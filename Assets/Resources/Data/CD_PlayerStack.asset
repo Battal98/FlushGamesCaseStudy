@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: CD_PlayerStack
   m_EditorClassIdentifier: 
   PlayerStackData:
-    OffsetY: 0.65
+    OffsetY: 1

@@ -8,6 +8,8 @@ using System;
 using Datas;
 using Datas.Scriptables;
 using System.Collections.Generic;
+using DG.Tweening.Core;
+using DG.Tweening.Plugins.Options;
 
 public enum GemType
 {
@@ -28,11 +30,17 @@ public class PlantTileController : MonoBehaviour, IGetPoolObject
     #region Private Variables
     [ShowInInspector]
     private GemType _gemType;
+    [ShowInInspector]
+    private Stackable _gemObject;
 
     private List<PlantedGemsData> _plantedGemsData;
+    private PlantedGemsData data;
     private bool _isGrowing = false;
-    private bool _isCollectable = false;
-    private bool _isCollected = true;
+    private bool _isCollected = false;
+
+    [ShowInInspector]
+    private Tweener _gemTween;
+    private Tweener _spriteTween;
 
     private const string DataPath = "Data/CD_PlantedGemData"; 
     private const string MaterialArc = "_Arc1"; 
@@ -51,26 +59,32 @@ public class PlantTileController : MonoBehaviour, IGetPoolObject
     [Button]
     private void OnStartGrown()
     {
-        if (_isGrowing || !_isCollected)
+        if (_isGrowing && !_isCollected)
             return;
-        OnResetTile();
         var obj = GetObject(ConvertGemTypeToPoolType());
-        var data = _plantedGemsData[(int)_gemType];
+        data = _plantedGemsData[(int)_gemType];
         var objComponent = obj.GetComponent<Stackable>();
         objComponent.SetType(_gemType);
+        _gemObject = objComponent;
+        _isGrowing = true;
         obj.transform.SetParent(targetTransform);
         obj.transform.localScale = Vector3.zero * 0.01f;
         obj.transform.localPosition = Vector3.zero;
-        obj.transform.DOScale(Vector3.one/2, data.GrownTime).OnUpdate(()=>
+        _gemTween = obj.transform.DOScale(Vector3.one, data.GrownTime).OnUpdate(() =>
         {
-            if (!_isCollectable && obj.transform.localScale.z >= data.CollectibleGemScale)
+            if (!_gemObject.IsCollectable && obj.transform.localScale.z >= data.CollectibleGemScale)
             {
-                _isCollectable = true;
                 spriteRendererFill.material.color = Color.green;
+                _gemObject.SetIsCollectable(true);
                 //TODO: Collectable olduðunun sinyalini yolla
             }
-        }).OnComplete(()=> _isGrowing = false);
-        spriteRendererFill.material.DOFloat(0, MaterialArc, data.GrownTime);
+        });
+        _spriteTween = spriteRendererFill.material.DOFloat(0, MaterialArc, data.GrownTime);
+    }
+
+    public Stackable GetGemObject()
+    {
+        return _gemObject;
     }
 
     [Button]
@@ -101,12 +115,15 @@ public class PlantTileController : MonoBehaviour, IGetPoolObject
         return PoolSignals.Instance.onGetObjectFromPool?.Invoke(poolType);
     }
 
-    private void OnResetTile()
+    public void OnResetTile()
     {
-        _isGrowing = true;
-        _isCollectable = false;
+        _gemTween.Kill();
+        _spriteTween.Kill();
+        _gemObject.CalculatePriceValue(data.SalePrice);
+        _isGrowing = false;
         _isCollected = false;
         spriteRendererFill.material.SetFloat(MaterialArc, 360);
         spriteRendererFill.material.color = Color.red;
+        _gemObject = null;
     }
 }
