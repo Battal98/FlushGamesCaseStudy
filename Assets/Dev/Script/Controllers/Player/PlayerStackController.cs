@@ -7,6 +7,7 @@ using PoolModule.Signals;
 using Signals;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Unity.VisualScripting.Antlr3.Runtime.Collections;
 using UnityEngine;
 
 namespace Controllers
@@ -16,9 +17,6 @@ namespace Controllers
         [SerializeField]
         private List<Vector3> nextPositions = new List<Vector3>();
 
-        private int _stackListConstCount;
-
-        private bool _canRemove = true;
         private PlayerStackData _playerStackData;
         private const string DataPath = "Data/CD_PlayerStack";
 
@@ -27,7 +25,32 @@ namespace Controllers
             DOTween.Init(true, true, LogBehaviour.Verbose).SetCapacity(500, 125);
             _playerStackData = GetPlayerStackData();
         }
-        private new List<GameObject> StackList
+
+        #region Event Subscription
+
+        private void OnEnable()
+        {
+            SubscribeEvents(true);
+        }
+
+        private void SubscribeEvents(bool isRegister)
+        {
+            if (isRegister)
+            {
+                CoreGameSignals.Instance.onRemoveStack += OnRemoveAllStack;
+            }
+            else
+            {
+                CoreGameSignals.Instance.onRemoveStack -= OnRemoveAllStack;
+            }
+        }
+        private void OnDisable()
+        {
+            SubscribeEvents(false);
+        }
+        #endregion
+
+        private new List<Stackable> StackList
         {
             get => base.StackList;
             set => base.StackList = value;
@@ -42,7 +65,7 @@ namespace Controllers
         {
             otherTransform.SetParent(transform);
         }
-        public override async void GetStack(GameObject stackableObj)
+        public override async void GetStack(Stackable stackableObj)
         {
             stackableObj.transform.rotation = Quaternion.LookRotation(transform.forward);
             StackList.Add(stackableObj);
@@ -63,50 +86,47 @@ namespace Controllers
 
         }
 
-        public void OnRemoveAllStack()
+        #region Remove Jobs
+
+        public void OnRemoveAllStack(Transform target)
         {
-            if (!_canRemove)
-                return;
-            _canRemove = false;
-            _stackListConstCount = StackList.Count;
-            RemoveAllStack();
+            RemoveAllStack(target);
         }
 
-        private async void RemoveAllStack()
+        private void RemoveAllStack(Transform target)
         {
-            if (StackList.Count == 0)
-            {
-                _canRemove = true;
+            if (StackList.Count <= 0)
                 return;
-            }
-            if (StackList.Count >= _stackListConstCount - 6)
-            {
-                RemoveStackAnimation(StackList[StackList.Count - 1]);
-                StackList.TrimExcess();
-                await Task.Delay(201);
-                RemoveAllStack();
-            }
-            else
-            {
-                for (int i = 0; i < StackList.Count; i++)
-                {
-                    RemoveStackAnimation(StackList[i]);
-                    StackList.TrimExcess();
-                }
-                _canRemove = true;
-            }
+
+            RemoveStackAnimation(StackList[StackList.Count-1], target);
+
         }
 
-        private void RemoveStackAnimation(GameObject removedStack)
+        private void RemoveStackAnimation(Stackable removedStack, Transform targetTransform)
         {
             removedStack.transform.rotation = Quaternion.LookRotation(transform.forward);
+            removedStack.gameObject.transform.SetParent(null);
             //CoreGameSignals.Instance.onUpdateMoneyScore.Invoke(+10);
-            StackList.Remove(removedStack);
-            removedStack.transform.DOLocalMove(transform.localPosition, .1f).OnComplete(() =>
+            CoreGameSignals.Instance.onCalculateGemStackType?.Invoke(removedStack.GemType);
+
+            removedStack.transform.DOLocalMove(targetTransform.localPosition, .1f).OnComplete(() =>
             {
-                ReleaseObject(removedStack, PoolType.Money);
+                ReleaseObject(removedStack.gameObject, PoolType.Money);
+                MoveNextObject(removedStack, targetTransform); 
+                StackList.Remove(removedStack);
+                StackList.TrimExcess();
             });
+
+        } 
+
+        private void MoveNextObject(Stackable removedStack, Transform targetTransform)
+        {
+            if (StackList.Count > 0)
+            {
+                RemoveStackAnimation(removedStack, targetTransform);
+            }
         }
+        #endregion
 
         public GameObject GetObject(PoolType poolType)
         {

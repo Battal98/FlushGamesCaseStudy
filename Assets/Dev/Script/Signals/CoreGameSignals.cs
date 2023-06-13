@@ -17,6 +17,9 @@ namespace Signals
         public UnityAction onStartMoneyPayment = delegate { };
         public UnityAction onStopMoneyPayment = delegate { };
 
+        public UnityAction<Transform> onRemoveStack = delegate { };
+        public UnityAction<GemType> onCalculateGemStackType = delegate { };
+
         //public UnityAction<PlayerAnimationStates> onChangePlayerAnimationState = delegate { };
 
     }

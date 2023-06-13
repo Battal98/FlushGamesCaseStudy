@@ -1,3 +1,4 @@
+using Signals;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -46,11 +47,26 @@ namespace Controllers
                     StartCoroutine(TriggerInteraction(plantTileController));
                 }
             }
+
+            if (other.TryGetComponent<StoreManager>(out StoreManager storeController))
+            {
+                CoreGameSignals.Instance.onRemoveStack?.Invoke(storeController.transform);
+                storeController.ChangeColor(Color.green);
+                //storeController.AddData();
+            }
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            if (other.TryGetComponent<StoreManager>(out StoreManager storeController))
+            {
+                storeController.ChangeColor(Color.black);
+            }
         }
         private void CollectMoney(Stackable stackable)
         {
             stackController.SetStackHolder(stackable.transform);
-            stackController.GetStack(stackable.gameObject);
+            stackController.GetStack(stackable);
             stackable.SetIsCollected(true);
         }
 

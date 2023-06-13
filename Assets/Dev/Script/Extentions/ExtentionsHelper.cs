@@ -131,8 +131,10 @@ public static class ExtentionsHelper
     public static T LoadDataFromFile<T>(this T saveData, string folderName, string fileName) where T : new()
     {
         var filePath = ConvertFilePathToJSON(folderName, fileName);
+
         string jsonData = File.ReadAllText(filePath);
         saveData = JsonConvert.DeserializeObject<T>(jsonData);
+
         return saveData;
     }
 
