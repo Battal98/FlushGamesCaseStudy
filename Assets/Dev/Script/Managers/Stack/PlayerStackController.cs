@@ -13,9 +13,9 @@ namespace Controllers
 {
     public class PlayerStackController : AStacker, IGetPoolObject, IReleasePoolObject
     {
-        [SerializeField] private float radiusAround;
+        [SerializeField]
+        private List<Vector3> nextPositions = new List<Vector3>();
 
-        private Sequence _getStackSequence;
         private int _stackListConstCount;
 
         private bool _canRemove = true;
@@ -38,30 +38,23 @@ namespace Controllers
             return Resources.Load<CD_PlayerStack>(DataPath).PlayerStackData;
         }
 
-        public void SetStackHolder(Transform otherTransform)
+        public override void SetStackHolder(Transform otherTransform)
         {
             otherTransform.SetParent(transform);
         }
-        public void GetStack(GameObject stackableObj)
+        public override async void GetStack(GameObject stackableObj)
         {
-            _getStackSequence = DOTween.Sequence();
             stackableObj.transform.rotation = Quaternion.LookRotation(transform.forward);
             StackList.Add(stackableObj);
-            if (StackList.Count >= 2)
-            {
-                stackableObj.transform.DOLocalMove(new Vector3(0, StackList[StackList.Count - 2].transform.localPosition.y + _playerStackData.OffsetY, 0), 0.3f);
-            }
-            else
-            {
-                stackableObj.transform.DOLocalMove(Vector3.zero, 0.3f);
-            }
-
+            var posY = StackList.Count >= 2 ? nextPositions[nextPositions.Count-1].y + _playerStackData.OffsetY : 0;
+            var pos = new Vector3(0, posY, 0);
+            nextPositions.Add(pos);
+            await Task.Delay(10);
+            stackableObj.transform.DOLocalMove(nextPositions[nextPositions.Count - 1], 0.3f);
         }
 
         public void PaymentStackAnimation(Transform transform)
         {
-            _getStackSequence = DOTween.Sequence();
-
             var moneyObj = GetObject(PoolType.Money);
             moneyObj.transform.position = this.transform.parent.transform.position;
             moneyObj.GetComponent<Collider>().enabled = false;

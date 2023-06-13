@@ -10,6 +10,7 @@ using Datas.Scriptables;
 using System.Collections.Generic;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
+using System.Threading.Tasks;
 
 public enum GemType
 {
@@ -28,6 +29,7 @@ public class PlantTileController : MonoBehaviour, IGetPoolObject
     #endregion
 
     #region Private Variables
+
     [ShowInInspector]
     private GemType _gemType;
     [ShowInInspector]
@@ -39,7 +41,7 @@ public class PlantTileController : MonoBehaviour, IGetPoolObject
     private bool _isCollected = false;
 
     [ShowInInspector]
-    private Tweener _gemTween;
+    private Tween _gemTween;
     private Tweener _spriteTween;
 
     private const string DataPath = "Data/CD_PlantedGemData"; 
@@ -51,13 +53,17 @@ public class PlantTileController : MonoBehaviour, IGetPoolObject
         _plantedGemsData = GetPlantedGemData();
     }
 
+    private void Start()
+    {
+        OnStartGrown();
+    }
+
     private List<PlantedGemsData> GetPlantedGemData()
     {
         return Resources.Load<CD_PlantedGemData>(DataPath).PlantedGemsDatas;
     }
 
-    [Button]
-    private void OnStartGrown()
+    public void OnStartGrown()
     {
         if (_isGrowing && !_isCollected)
             return;
@@ -70,31 +76,36 @@ public class PlantTileController : MonoBehaviour, IGetPoolObject
         obj.transform.SetParent(targetTransform);
         obj.transform.localScale = Vector3.zero * 0.01f;
         obj.transform.localPosition = Vector3.zero;
-        _gemTween = obj.transform.DOScale(Vector3.one, data.GrownTime).OnUpdate(() =>
+        if (_gemTween != null)
         {
-            if (!_gemObject.IsCollectable && obj.transform.localScale.z >= data.CollectibleGemScale)
+            _gemTween.Kill();
+            _gemTween = null;
+        }
+
+        if (_spriteTween != null)
+        {
+            _spriteTween.Kill();
+            _spriteTween = null;
+        }
+
+        Tween newTween = obj.transform.DOScale(Vector3.one, data.GrownTime).OnUpdate(() =>
+        {
+            if (_gemObject != null && !_gemObject.IsCollectable && obj.transform.localScale.z >= data.CollectibleGemScale)
             {
                 spriteRendererFill.material.color = Color.green;
                 _gemObject.SetIsCollectable(true);
-                //TODO: Collectable olduðunun sinyalini yolla
             }
+        }).OnComplete(()=>
+        {
+            KillTween();
         });
+        _gemTween = newTween;
         _spriteTween = spriteRendererFill.material.DOFloat(0, MaterialArc, data.GrownTime);
     }
 
     public Stackable GetGemObject()
     {
         return _gemObject;
-    }
-
-    [Button]
-    public void IsCollected(bool isCollected)
-    {
-        _isCollected = isCollected;
-        if (isCollected)
-        {
-            OnStartGrown();
-        }
     }
 
     private GemType GetRandomPoolType()
@@ -115,15 +126,30 @@ public class PlantTileController : MonoBehaviour, IGetPoolObject
         return PoolSignals.Instance.onGetObjectFromPool?.Invoke(poolType);
     }
 
-    public void OnResetTile()
+    public async void OnResetTile()
     {
-        _gemTween.Kill();
-        _spriteTween.Kill();
+        KillTween();
         _gemObject.CalculatePriceValue(data.SalePrice);
         _isGrowing = false;
         _isCollected = false;
         spriteRendererFill.material.SetFloat(MaterialArc, 360);
         spriteRendererFill.material.color = Color.red;
         _gemObject = null;
+        await Task.Delay(1000);
+        OnStartGrown();
+    }
+
+    private void KillTween()
+    {
+        Tween gemTween = _gemTween;
+        Tweener spriteTween = _spriteTween;
+
+        // Tween'leri null olarak ayarla
+        _gemTween = null;
+        _spriteTween = null;
+
+        // Tween'leri durdur
+        gemTween?.Kill();
+        spriteTween?.Kill();
     }
 }

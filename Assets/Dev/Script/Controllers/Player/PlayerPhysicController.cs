@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Controllers
@@ -14,6 +16,7 @@ namespace Controllers
 
         [SerializeField]
         private PlayerStackController stackController;
+        private bool isInteracting = false;
 
         #endregion
 
@@ -29,15 +32,18 @@ namespace Controllers
         {
             if (other.TryGetComponent<PlantTileController>(out PlantTileController plantTileController))
             {
+                if (isInteracting)
+                    return;
+
                 var gemStackable = plantTileController.GetGemObject();
-                Debug.Log("Trigger: " + gemStackable);
-                if (gemStackable)
+
+                if (!gemStackable)
+                    return;
+
+                if (!gemStackable.IsCollected && gemStackable.IsCollectable)
                 {
-                    if (!gemStackable.IsCollected && gemStackable.IsCollectable)
-                    {
-                        CollectMoney(gemStackable);
-                        plantTileController.OnResetTile();
-                    }
+                    CollectMoney(gemStackable);
+                    StartCoroutine(TriggerInteraction(plantTileController));
                 }
             }
         }
@@ -48,6 +54,16 @@ namespace Controllers
             stackable.SetIsCollected(true);
         }
 
+        private IEnumerator TriggerInteraction(PlantTileController plantTileController)
+        {
+            isInteracting = true;
+
+            yield return new WaitForEndOfFrame();
+
+            plantTileController.OnResetTile();
+
+            isInteracting = false;
+        }
         #region Paying Interaction
 
         #endregion

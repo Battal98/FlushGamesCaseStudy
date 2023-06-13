@@ -43,6 +43,7 @@ public class Stackable : MonoBehaviour
 
     public void ResetProps()
     {
+        this.transform.localScale = Vector3.one * 0.01f;
         _isCollectable = this.transform.localScale.z <= 0.25f ? false : true;
         _isCollected = false;
     }
