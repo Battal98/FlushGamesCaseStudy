@@ -6,6 +6,7 @@ using Signals;
 using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 namespace Controllers
@@ -43,6 +44,10 @@ namespace Controllers
         private MeshRenderer meshRenderer;
         [ShowInInspector]
         private CollectedGemDatasList data;
+        [ShowInInspector]
+        private List<int> _gemCounts = new List<int>();
+        [ShowInInspector]
+        private List<int> _totalGolds = new List<int>();
 
         private const string DefaultDataPath = "Data/CD_CollectedGemData";
         private const int _uniqeID = 251263;
@@ -50,6 +55,8 @@ namespace Controllers
         private void Start()
         {
             InitLevelData();
+            CreateGemCountLists();
+            CreateGemTotalGoldLists();
         }
         private void InitLevelData()
         {
@@ -69,7 +76,7 @@ namespace Controllers
         private void LoadCollectedGemData()
         {
             data = SaveLoadSignals.Instance.onLoadCollectedGemData?.Invoke(SaveLoadType.CollectedGemData, _uniqeID);
-            CoreGameSignals.Instance.onGetCollectedGemData?.Invoke(data);
+            CoreGameSignals.Instance.onSetCollectedGemData?.Invoke(data);
         }
         #region Event Subscriptions 
 
@@ -102,11 +109,45 @@ namespace Controllers
             meshRenderer.material.color = _color;
         }
 
+        private void SetGemCountAndGold(Stackable stackable)
+        {
+            _gemCounts[(int)stackable.GemType] = data.CollectedGemDataList[(int)stackable.GemType].GemCount;
+            _totalGolds[(int)stackable.GemType] = data.CollectedGemDataList[(int)stackable.GemType].TotalGold;
+            UISignals.Instance.onChangeGemScoreAndCount?.Invoke(_gemCounts[(int)stackable.GemType], stackable.GemType, _totalGolds[(int)stackable.GemType]);
+        }
+
+        private void CreateGemCountLists()
+        {
+            if (_gemCounts.Count <=0 )
+            {
+                var enumLenght = Enum.GetValues(typeof(GemType)).Length;
+                for (int i = 0; i < enumLenght; i++)
+                {
+                    _gemCounts.Add(0);
+                }
+            }
+        }
+        private void CreateGemTotalGoldLists()
+        {
+            if (_totalGolds.Count <= 0)
+            {
+                var enumLenght = Enum.GetValues(typeof(GemType)).Length;
+                for (int i = 0; i < enumLenght; i++)
+                {
+                    _totalGolds.Add(0);
+                }
+            }
+        }
+
         public void OnChangeGemCount( Stackable stackable)
         {
-            var gemCount = data.CollectedGemDataList[(int)stackable.GemType].GemCount++;
-            var goldCount = data.CollectedGemDataList[(int)stackable.GemType].TotalGold += stackable.GetPriceValue();
-            UISignals.Instance.onChangeGemScoreAndCount?.Invoke(gemCount, stackable.GemType, goldCount);
+            SetGemCountAndGold(stackable);
+            _gemCounts[(int)stackable.GemType]++;
+            _totalGolds[(int)stackable.GemType] += stackable.GetPriceValue();
+            data.CollectedGemDataList[(int)stackable.GemType].GemCount = _gemCounts[(int)stackable.GemType];
+            data.CollectedGemDataList[(int)stackable.GemType].TotalGold = _totalGolds[(int)stackable.GemType];
+            UISignals.Instance.onChangeGemScoreAndCount?.Invoke(_gemCounts[(int)stackable.GemType], stackable.GemType, _totalGolds[(int)stackable.GemType]);
+
         }
 
 

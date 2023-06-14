@@ -62,13 +62,13 @@ namespace UIModules.Managers
         private void SubscribeEvents()
         {
             UISignals.Instance.onUpdateGoldScoreText += OnUpdateGoldScoreText;
-            CoreGameSignals.Instance.onGetCollectedGemData += OnSetCollectedGemDatas;
+            CoreGameSignals.Instance.onSetCollectedGemData += OnSetCollectedGemDatas;
             UISignals.Instance.onChangeGemScoreAndCount += OnChangeGemScoreAndCount;
         }
 
         private void UnsubscribeEvents()
         {
-            CoreGameSignals.Instance.onGetCollectedGemData -= OnSetCollectedGemDatas;
+            CoreGameSignals.Instance.onSetCollectedGemData -= OnSetCollectedGemDatas;
             UISignals.Instance.onUpdateGoldScoreText -= OnUpdateGoldScoreText;
             UISignals.Instance.onChangeGemScoreAndCount -= OnChangeGemScoreAndCount;
         }

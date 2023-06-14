@@ -22,7 +22,7 @@ namespace Signals
         public UnityAction<Transform> onRemoveStack = delegate { };
         public UnityAction<Stackable> onCalculateGemStackType = delegate { };
 
-        public UnityAction<CollectedGemDatasList> onGetCollectedGemData = delegate { };
+        public UnityAction<CollectedGemDatasList> onSetCollectedGemData = delegate { };
 
         //public UnityAction<PlayerAnimationStates> onChangePlayerAnimationState = delegate { };
 
