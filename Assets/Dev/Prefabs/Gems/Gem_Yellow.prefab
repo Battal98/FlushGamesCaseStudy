@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   col: {fileID: 3149721831225542520}
-  gemType: 0
+  gemType: 2
   _isCollected: 0
   _isCollectable: 0
 --- !u!65 &3149721831225542520

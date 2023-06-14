@@ -17,14 +17,12 @@ namespace Controllers
 
         [SerializeField]
         private PlayerStackController stackController;
-        private bool isInteracting = false;
 
         #endregion
 
         #region Private Variables
 
-        private bool _canPay = true;
-
+        private bool _isInteracting = false;
         #endregion
 
         #endregion
@@ -33,7 +31,7 @@ namespace Controllers
         {
             if (other.TryGetComponent<PlantTileController>(out PlantTileController plantTileController))
             {
-                if (isInteracting)
+                if (_isInteracting)
                     return;
 
                 var gemStackable = plantTileController.GetGemObject();
@@ -52,7 +50,6 @@ namespace Controllers
             {
                 CoreGameSignals.Instance.onRemoveStack?.Invoke(storeController.transform);
                 storeController.ChangeColor(Color.green);
-                //storeController.AddData();
             }
         }
 
@@ -73,16 +70,13 @@ namespace Controllers
 
         private IEnumerator TriggerInteraction(PlantTileController plantTileController)
         {
-            isInteracting = true;
+            _isInteracting = true;
 
             yield return new WaitForEndOfFrame();
 
             plantTileController.OnResetTile();
 
-            isInteracting = false;
+            _isInteracting = false;
         }
-        #region Paying Interaction
-
-        #endregion
     }
 }

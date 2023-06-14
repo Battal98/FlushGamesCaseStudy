@@ -41,6 +41,11 @@ public class Stackable : MonoBehaviour
         _priceValue = (int) (this.transform.localScale.z * 100) + SalePrice;
     }
 
+    public int GetPriceValue()
+    {
+        return _priceValue;
+    }
+
     public void ResetProps()
     {
         this.transform.localScale = Vector3.one * 0.01f;

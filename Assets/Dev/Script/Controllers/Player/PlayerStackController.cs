@@ -18,6 +18,9 @@ namespace Controllers
         private List<Vector3> nextPositions = new List<Vector3>();
 
         private PlayerStackData _playerStackData;
+        private Tween _currentTween;
+        private bool _isCanceledTween;
+
         private const string DataPath = "Data/CD_PlayerStack";
 
         private void Awake()
@@ -76,16 +79,6 @@ namespace Controllers
             stackableObj.transform.DOLocalMove(nextPositions[nextPositions.Count - 1], 0.3f);
         }
 
-        public void PaymentStackAnimation(Transform transform)
-        {
-            var moneyObj = GetObject(PoolType.Money);
-            moneyObj.transform.position = this.transform.parent.transform.position;
-            moneyObj.GetComponent<Collider>().enabled = false;
-            moneyObj.transform.rotation = Quaternion.LookRotation(transform.forward);
-            moneyObj.transform.DOMove(transform.position, 0.3f).OnComplete(() => ReleaseObject(moneyObj, PoolType.Money));
-
-        }
-
         #region Remove Jobs
 
         public void OnRemoveAllStack(Transform target)
@@ -94,8 +87,6 @@ namespace Controllers
             RemoveAllStack(target);
         }
 
-        private Tween _currentTween;
-        private bool _isCanceledTween;// Eklediðimiz deðiþken, mevcut tween hareketini takip etmek için kullanýlacak
         private void RemoveAllStack(Transform target)
         {
             if (StackList.Count <= 0)
@@ -104,28 +95,12 @@ namespace Controllers
             _currentTween = RemoveStackAnimationTween(StackList[StackList.Count - 1], target);
         }
 
-        private void RemoveStackAnimation(Stackable removedStack, Transform targetTransform)
-        {
-            removedStack.transform.rotation = Quaternion.LookRotation(transform.forward);
-            removedStack.gameObject.transform.SetParent(null);
-            //CoreGameSignals.Instance.onUpdateMoneyScore.Invoke(+10);
-            CoreGameSignals.Instance.onCalculateGemStackType?.Invoke(removedStack.GemType);
-
-            removedStack.transform.DOLocalMove(targetTransform.localPosition, .1f).OnComplete(() =>
-            {
-                StackList.Remove(removedStack);
-                StackList.TrimExcess();
-                ReleaseObject(removedStack.gameObject, PoolType.Money);
-                MoveNextObject(StackList[StackList.Count - 1], targetTransform); 
-            });
-
-        }
         private Tween RemoveStackAnimationTween(Stackable removedStack, Transform targetTransform)
         {
             removedStack.transform.rotation = Quaternion.LookRotation(transform.forward);
             removedStack.gameObject.transform.SetParent(null);
-            //CoreGameSignals.Instance.onUpdateMoneyScore.Invoke(+10);
-            CoreGameSignals.Instance.onCalculateGemStackType?.Invoke(removedStack.GemType);
+            CoreGameSignals.Instance.onUpdateGoldScore.Invoke(removedStack.GetPriceValue());
+            CoreGameSignals.Instance.onCalculateGemStackType?.Invoke(removedStack);
 
             Tween tween = removedStack.transform.DOLocalMove(targetTransform.localPosition, .1f).OnComplete(() =>
             {

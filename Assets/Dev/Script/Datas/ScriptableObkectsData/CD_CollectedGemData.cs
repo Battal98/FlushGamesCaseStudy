@@ -7,6 +7,6 @@ namespace Data
 	[CreateAssetMenu(fileName = "CD_CollectedGemData", menuName = "FlushGames/CD_CollectedGemData", order = 0)]
 	public class CD_CollectedGemData : ScriptableObject
 	{
-		public List<CollectedGemDatas> CollectedGemData = new List<CollectedGemDatas>();
+		public CollectedGemDatasList CollectedGemData;
 	} 
 }

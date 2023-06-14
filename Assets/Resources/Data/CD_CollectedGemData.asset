@@ -13,9 +13,22 @@ MonoBehaviour:
   m_Name: CD_CollectedGemData
   m_EditorClassIdentifier: 
   CollectedGemData:
-  - GemType: 0
-    GemCount: 0
-  - GemType: 1
-    GemCount: 0
-  - GemType: 2
-    GemCount: 0
+    CollectedGemDataList:
+    - GemType: 0
+      GemName: Green Gem
+      SpriteObj: {fileID: 1309237220901788088, guid: 5777590e805a8654e9cba3c37c080e29,
+        type: 3}
+      GemCount: 0
+      TotalGold: 0
+    - GemType: 1
+      GemName: Pink Gem
+      SpriteObj: {fileID: 7102133498237536464, guid: e5d80e9d1ce217b42b2bbd884bfcf63d,
+        type: 3}
+      GemCount: 0
+      TotalGold: 0
+    - GemType: 2
+      GemName: Yellow Gem
+      SpriteObj: {fileID: 8412577175839282799, guid: 22bfb94deeae4dd419fe4d5089193252,
+        type: 3}
+      GemCount: 0
+      TotalGold: 0

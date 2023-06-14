@@ -264,6 +264,7 @@ GameObject:
   - component: {fileID: 3990076709347476971}
   - component: {fileID: 2097571068007157749}
   - component: {fileID: 5414724490188868461}
+  - component: {fileID: 1059966251524032926}
   m_Layer: 0
   m_Name: PlantTile
   m_TagString: Untagged
@@ -316,6 +317,43 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: -0.47}
+--- !u!114 &1059966251524032926
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3990076709347476969}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: baff8732cd3074ef88b34f9cc487846d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabId: 159651587567641442
+  localRefs:
+    _Keys:
+    - {fileID: 3990076709347476969}
+    - {fileID: 3990076709347476971}
+    - {fileID: 2097571068007157749}
+    - {fileID: 11500000, guid: 461dc0a599ceaed4c8ebb7651a8d9514, type: 3}
+    - {fileID: 1096448345171501121}
+    - {fileID: 3990076707608810824}
+    - {fileID: 21300000, guid: 32427f8c7423e7249950c178730aec43, type: 3}
+    - {fileID: 2100000, guid: 3ddf86f13a0626b4a9c66a193fbaf052, type: 2}
+    - {fileID: 5414724490188868461}
+    - {fileID: 1059966251524032926}
+    - {fileID: 3116321140797468418}
+    - {fileID: 7108706318022283539}
+    - {fileID: 4794360144707270538}
+    - {fileID: 21300000, guid: cd33c50b58ad56d41b1ed2a7959e9421, type: 3}
+    - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+    - {fileID: 3990076708102808118}
+    - {fileID: 3990076708102808136}
+    - {fileID: 3990076708102808119}
+    - {fileID: 3990076707608810806}
+    - {fileID: 3990076707608810807}
+    - {fileID: 5033331060102461506}
+    _Values: fbdd21373132b85c08a6a08bf4ad5e2b722463f19b16a627ae398885e6dc4c7e220092865927f25e897220b812504c4b86a0576996299d11844989f7a932752ba5dd510bc01b7a4a31056829f5ed1501792bffb97a1c174b635cf65d4e15f744e74c1334ff418a5f1ca19a9c91c606705f8b71d5312ea677c5056e1d11d79946fdac41a9d9e00238a09fd41cb6b4dd64aa7a013c5bdded16f28a6ef9d36d4e0c3be0993e08b04a3e
 --- !u!1 &5033331060102461506
 GameObject:
   m_ObjectHideFlags: 0
