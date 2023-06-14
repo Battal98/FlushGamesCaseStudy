@@ -1,6 +1,5 @@
 using Sirenix.OdinInspector;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -45,6 +44,12 @@ public class GridManager : MonoBehaviour
     }
 
 #if UNITY_EDITOR
+
+    /// <summary>
+    /// This Attribute is create grid in Editor and see how is lookslike 
+    /// </summary>
+    /// 
+
     [Button]
 #endif
     private void OnCreateGrid()
